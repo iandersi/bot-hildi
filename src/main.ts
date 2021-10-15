@@ -9,6 +9,7 @@ client.once('ready', () => {
 });
 
 //New member greeting
+//New member role add
 client.on("guildMemberAdd", (guildMember) => {
     let guildChannel = guildMember.guild.channels.cache.get('860896985045401630');
     let newMemberID = guildMember.id;
@@ -16,6 +17,10 @@ client.on("guildMemberAdd", (guildMember) => {
         (guildChannel as unknown as TextChannel).send(`Welcome, <@${newMemberID}>!`);
     }
 
+    let role = guildMember.guild.roles.cache.get('898216423078363188');
+    if (role) {
+        guildMember.roles.add(role);
+    }
 
 });
 
