@@ -1,6 +1,13 @@
 import * as dotenv from "dotenv";
 import {Client, Intents, Permissions, TextChannel} from "discord.js";
-dotenv.config();
+
+let envPath = "./.env";
+
+if (process.argv[2]) {
+    envPath += "." + process.argv[2];
+}
+
+dotenv.config({path: envPath});
 import {scheduleJob} from "node-schedule";
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES] });

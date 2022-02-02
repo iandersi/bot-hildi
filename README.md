@@ -1,5 +1,12 @@
 ## How to setup Hildibot   
 
+
+
+
+
+
+## Project base creation
+
 This application needs node 16.8.0.   
 You can install Node.js via nodejs.org or NVM via github.com/nvm-sh/nvm.   
    
