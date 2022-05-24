@@ -1,14 +1,15 @@
 import * as dotenv from "dotenv";
 import {Client, Intents, TextChannel} from "discord.js";
+import raidInfo from "../raidInfo.json";
+import {scheduleJob} from "node-schedule";
 
 let envPath = "./.env";
 
 if (process.argv[2]) {
     envPath += "." + process.argv[2];
 }
-
 dotenv.config({path: envPath});
-import {scheduleJob} from "node-schedule";
+
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES] });
 
@@ -16,20 +17,21 @@ client.once('ready', () => {
     console.log('Ready!');
 });
 
-function raidDayReminder(){
-    console.log("message sent");
+raidInfo.forEach(raidDay => scheduleJob(raidDay.jobSchedule, ()=> raidDayReminder(raidDay.image, raidDay.message)));
+
+//const raidReminderTest = scheduleJob(`${process.env.SCHEDULE_STATIC_DAY_3}`, ()=> raidDayReminder(getImages[0], getMessages[0]));
+
+
+
+function raidDayReminder(imageToPost: string, messageToPost: string){
     client.guilds.cache.forEach(guild => {
         let staticChannel = guild.channels.cache.get(`${process.env.STATIC_CHANNEL}`);
-        let everyone = guild.roles.everyone;
         if (staticChannel?.isText()) {
-            staticChannel.send(`${everyone} HELLO! Friendly reminder from your favorite bot - tomorrow is raid day!`);
+            staticChannel.send({files: [imageToPost], content: `@everyone ${messageToPost}`})
+                .then(()=> console.log("Reminder done."));
         }
     })
 }
-
-const raidReminderSunday = scheduleJob(`${process.env.SCHEDULE_STATIC_DAY_1}`, raidDayReminder)
-const raidReminderWednesday = scheduleJob(`${process.env.SCHEDULE_STATIC_DAY_2}`, raidDayReminder)
-// const raidReminderTest = scheduleJob(`${process.env.SCHEDULE_STATIC_DAY_3}`, raidDayReminder)
 
 //Kick member at certain time
 //Loops through servers, checks if there is a guest role, if role has members > kick
@@ -44,10 +46,6 @@ const job = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (){
 
             role.members.forEach((guildMember) => {
                 guild.members.kick(guildMember, 'guest').then(() => {
-                    let guildBotLogChannel = guild.channels.cache.get(`${process.env.BOT_LOG_CHANNEL}`);
-                    if (guildBotLogChannel?.isText()) {
-                        (guildBotLogChannel as unknown as TextChannel).send(`Member kicked ${guildMember}\nReason: Guest`)
-                    }
                     console.log(`Kicked ${guildMember.displayName}`);
                 }).catch(reason => console.error(`Failed to kick member ${guildMember.displayName}: ${reason}`));
             });
@@ -75,6 +73,14 @@ client.on("guildMemberAdd", (guildMember) => {
         guildMember.roles.add(role);
     }
 
+});
+
+client.on("guildMemberRemove", (guildMember)=>{
+    let memberDisplayName = guildMember.displayName;
+    let guildBotLogChannel = guildMember.guild.channels.cache.get(`${process.env.BOT_LOG_CHANNEL}`);
+    if (guildBotLogChannel?.isText()) {
+        (guildBotLogChannel as unknown as TextChannel).send(`Member has left/been kicked from the server!\nMember nickname: **${memberDisplayName}**`);
+    }
 });
 
 
