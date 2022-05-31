@@ -5,6 +5,7 @@ import {scheduleJob} from "node-schedule";
 
 let envPath = "./.env";
 
+//.env.test
 if (process.argv[2]) {
     envPath += "." + process.argv[2];
 }
@@ -19,9 +20,6 @@ client.once('ready', () => {
 
 raidInfo.forEach(raidDay => scheduleJob(raidDay.jobSchedule, ()=> raidDayReminder(raidDay.image, raidDay.message)));
 
-//const raidReminderTest = scheduleJob(`${process.env.SCHEDULE_STATIC_DAY_3}`, ()=> raidDayReminder(getImages[0], getMessages[0]));
-
-
 
 function raidDayReminder(imageToPost: string, messageToPost: string){
     client.guilds.cache.forEach(guild => {
@@ -33,8 +31,7 @@ function raidDayReminder(imageToPost: string, messageToPost: string){
     })
 }
 
-//Kick member at certain time
-//Loops through servers, checks if there is a guest role, if role has members > kick
+
 const job = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (){
     client.guilds.cache.forEach(function(guild){
         let role = guild.roles.cache.get(`${process.env.GUEST_ROLE}`);
@@ -54,10 +51,8 @@ const job = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (){
 });
 
 
-//New member greeting
-//New member role add
 client.on("guildMemberAdd", (guildMember) => {
-    let guildChannel = guildMember.guild.channels.cache.get(`${process.env.GUILD_CHANNEL}`);
+    let guildChannel = guildMember.guild.channels.cache.get(`${process.env.WELCOME_CHANNEL}`);
     let newMemberID = guildMember.id;
     if (guildChannel?.isText()) {
         (guildChannel as unknown as TextChannel).send(`Welcome, <@${newMemberID}>!`);
