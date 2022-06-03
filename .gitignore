@@ -121,4 +121,4 @@ dist
 .idea/
 
 # raidInfo
-raidInfo.json
+src/raidInfo.json

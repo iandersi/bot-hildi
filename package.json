@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/main.ts",
-    "start:test": "ts-node src/main.ts test"
+    "start:test": "ts-node src/main.ts test",
+    "build": "tsc"
   },
   "author": "",
   "license": "ISC",

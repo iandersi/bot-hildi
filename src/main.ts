@@ -1,6 +1,6 @@
 import * as dotenv from "dotenv";
 import {Client, Intents, TextChannel} from "discord.js";
-import raidInfo from "../raidInfo.json";
+import raidInfo from "./raidInfo.json";
 import {scheduleJob} from "node-schedule";
 
 let envPath = "./.env";
@@ -10,7 +10,7 @@ if (process.argv[2]) {
     envPath += "." + process.argv[2];
 }
 dotenv.config({path: envPath});
-
+console.log(process.env);
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES] });
 
@@ -53,7 +53,7 @@ const job = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (){
 
 client.on("guildMemberAdd", (guildMember) => {
     let guildChannel = guildMember.guild.channels.cache.get(`${process.env.WELCOME_CHANNEL}`);
-    let newMemberID = guildMember.id;
+    let newMemberID = guildMember.id; 
     if (guildChannel?.isText()) {
         (guildChannel as unknown as TextChannel).send(`Welcome, <@${newMemberID}>!`);
     }

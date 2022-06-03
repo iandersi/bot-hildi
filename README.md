@@ -17,7 +17,7 @@ Hildibot can:
 - Callout rare FATE spawns
 - Callout rare hunt spawns
 
-## How to setup Hildibot
+## How to setup Hildibot for development
 
 >Note 1: Hildibot does not support multiple servers at the same time!
 >
@@ -64,4 +64,16 @@ STATIC_CHANNEL= Server channel ID for channel with raiding members
     "message": "Reminder! Prog tomorrow!" //Message sent to channel
   }
 ]
+```
+
+## Build
+
+You can create distributable build with:
+```
+> npm run build
+```
+
+It is upto you in which way you configure the variables for the distributable version, you can create a separate .env file for the dist folder, or you can configure the variables in another way. Anyway you choose, you can then start the bot with the following command:
+```
+> node main.js
 ```
