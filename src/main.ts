@@ -10,7 +10,6 @@ if (process.argv[2]) {
     envPath += "." + process.argv[2];
 }
 dotenv.config({path: envPath});
-console.log(process.env);
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES] });
 
