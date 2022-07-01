@@ -17,7 +17,7 @@ client.once('ready', () => {
     console.log('Ready!');
 });
 
-raidInfo.forEach(raidDay => scheduleJob(raidDay.jobSchedule, ()=> raidDayReminder(raidDay.image, raidDay.message)));
+let scheduledJobs = raidInfo.map(raidDay => scheduleJob(raidDay.jobSchedule, ()=> raidDayReminder(raidDay.image, raidDay.message)));
 
 
 function raidDayReminder(imageToPost: string, messageToPost: string){
@@ -31,7 +31,7 @@ function raidDayReminder(imageToPost: string, messageToPost: string){
 }
 
 
-const job = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (){
+const kickJob = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (){
     client.guilds.cache.forEach(function(guild){
         let role = guild.roles.cache.get(`${process.env.GUEST_ROLE}`);
         if (role) {
@@ -82,3 +82,20 @@ client.on("guildMemberRemove", (guildMember)=>{
 client.login(process.env.BOT_TOKEN).then(function (){
     console.log('Logged in.');
 });
+
+function shutdown(){
+    scheduledJobs.forEach(job => job.cancel());
+    console.log("Raid reminder jobs canceled.")
+    kickJob.cancel();
+    console.log("Kick job canceled.")
+    client.destroy();
+    console.log("Discord client destroyed!");
+    process.exit(0);
+}
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
+process.on("exit", ()=> {
+    console.log("Goodbye!");
+})
