@@ -7,9 +7,17 @@ Hildibot is a discord bot that I made for my FFXIV guild. It's a simple bot that
 Hildibot can:
 
 - Greet new members
+
+    ![img_1.png](img_1.png)
 - Assign new members a "guest role"
+
+    ![img_2.png](img_2.png)
 - Kick members with "guest role" at scheduled time
+
+    ![img_3.png](img_3.png)
 - Post raid reminders at scheduled time
+
+    ![img.png](img.png)
 
 ### Future plans if I have time
 
