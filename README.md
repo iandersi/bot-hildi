@@ -19,6 +19,14 @@ Hildibot can:
 
     ![img.png](img.png)
 
+- Has slash commands: Add/Remove Cactpot role
+
+  ![img_4.png](img_4.png)
+
+- Cactpot role tagged in specific reminder
+
+  ![img_5.png](img_5.png)
+
 ### Future plans if I have time
 
 - Slash commands and event handling
@@ -39,11 +47,15 @@ After you've cloned this repository you need to configure the following files wi
 #### .env template:   
 ```
 BOT_TOKEN= Your bot token
+CLIENT_ID=Client ID found in devtools portal
+GUILD_ID=Server ID found in Discord
 WELCOME_CHANNEL= Server channel ID for welcome messages
 GUEST_ROLE= Role ID for role that gets kicked 
 BOT_LOG_CHANNEL= Server channel where bot sends notificatons of joined/kicked members
 SCHEDULE_GUEST_KICK_JOB= Cron schedule expression for kicking members 
 STATIC_CHANNEL= Server channel ID for channel with raiding members
+CACTPOT_ROLE=Role to be tagged for the cactpot ticket reminder
+EVENT_CHANNEL=Channel where the cactpot reminder goes (you can change this to anything you like that suits your needs better)
 ```
 
 #### raidInfo.json template:
@@ -74,12 +86,28 @@ STATIC_CHANNEL= Server channel ID for channel with raiding members
 ]
 ```
 
+#### Slash commands
+```
+For the slash commands to work you have to create a deploy-commands.ts file for running a script and a reminders.json file for reminders for the specific Cactpot role only.
+
+//Reminders JSON example
+[
+  {
+    "day": "saturday (cactpot reminder)", //Dev reminder, not used anywhere
+    "jobSchedule": "0 19 * * 6", //At 19:00 every Saturday
+    "image": "", //Can use image if you want to, not used in my example
+    "message": "<@&ROLE_ID> Greetings, friends! Remember to get your Jumbo Cactpot tickets. :cactus:"
+  }
+]
+```
+
 ## Build
 
 You can create distributable build with:
 ```
 > npm run build
 ```
+I run mine on a Raspberry Pi with Docker.
 
 It is upto you in which way you configure the variables for the distributable version, you can create a separate .env file for the dist folder, or you can configure the variables in another way. Anyway you choose, you can then start the bot with the following command:
 ```
