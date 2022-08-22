@@ -29,7 +29,8 @@ Hildibot can:
 
 ### Future plans if I have time
 
-- Slash commands and event handling
+- ~~Slash commands and event handling~~ done
+- Requested: Updating raid reminders via dm's
 - Callout rare FATE spawns
 - Callout rare hunt spawns
 
