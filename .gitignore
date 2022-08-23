@@ -126,9 +126,6 @@ src/raidInfo.json
 # reminders
 src/reminders.json
 
-# deploy commands
-src/deploy-commands.ts
-
 # docker files
 Dockerfile
 raspiBuild.sh
