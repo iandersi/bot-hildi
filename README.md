@@ -88,9 +88,18 @@ EVENT_CHANNEL=Channel where the cactpot reminder goes (you can change this to an
 ```
 
 #### Slash commands
-```
-For the slash commands to work you have to create a deploy-commands.ts file for running a script and a reminders.json file for reminders for the specific Cactpot role only.
 
+> 1. For the slash commands to work you have register the commands.
+>
+> 1. You also need to create a reminders.json file for reminders for the specific Cactpot role only.
+
+You can register commands with the following command in the terminal:
+
+```
+> npm run registerCommands
+```
+
+```
 //Reminders JSON example
 [
   {
