@@ -153,6 +153,67 @@ client.on('interactionCreate', async interaction => {
         }
     }
 
+    if (interaction.commandName === 'addcraftingupdates') {
+        if (!process.env.CRAFTINGUPDATES_ROLE) {
+            console.log('CraftingUpdates role error.');
+            return interaction.reply('Internal error.');
+        }
+        if (!interaction.guild) {
+            console.log('Guild error.')
+            return interaction.reply('Internal error.');
+        }
+
+        let guildMember = interaction.guild.members.cache.get(interaction.user.id);
+
+        if (!guildMember) {
+            console.log('Member not found.');
+            return interaction.reply('Member not found.');
+        }
+
+        if (!guildMember.roles.cache.get(process.env.CRAFTINGUPDATES_ROLE)) {
+            let role = guildMember.guild.roles.cache.get(`${process.env.CRAFTINGUPDATES_ROLE}`)
+            if (role) {
+                await guildMember.roles.add(role);
+                await interaction.reply('You now have the CraftingUpdates role!');
+            } else {
+                return interaction.reply('Role not found.');
+            }
+        } else {
+            return interaction.reply('You already have the CraftingUpdates role.');
+        }
+    }
+
+    if (interaction.commandName === "removecraftingupdates") {
+        if (!process.env.CRAFTINGUPDATES_ROLE){
+            console.log('CraftingUpdates role error.');
+            return interaction.reply('Internal error.');
+        }
+
+        if (!interaction.guild) {
+            console.log('Guild error.')
+            return interaction.reply('Internal error.');
+        }
+
+        let guildMember = interaction.guild.members.cache.get(interaction.user.id);
+
+        if (!guildMember) {
+            console.log('Member not found.');
+            return interaction.reply('Member not found.');
+        }
+
+        if (guildMember.roles.cache.get(process.env.CRAFTINGUPDATES_ROLE)) {
+            let role = guildMember.guild.roles.cache.get(`${process.env.CRAFTINGUPDATES_ROLE}`)
+            if (role) {
+                await guildMember.roles.remove(role);
+                await interaction.reply('You no longer have the CraftingUpdates role!');
+            } else {
+                return interaction.reply('Role not found.');
+            }
+        } else {
+            return interaction.reply('Could not remove role.');
+        }
+    }
+
 });
 
 client.login(process.env.BOT_TOKEN).then(function (){
