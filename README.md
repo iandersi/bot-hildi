@@ -19,7 +19,7 @@ Hildibot can:
 
     ![img.png](img.png)
 
-- Has slash commands: Add/Remove Cactpot role
+- Has slash commands, for example:
 
   ![img_4.png](img_4.png)
 
@@ -33,6 +33,7 @@ Hildibot can:
 - Requested: Updating raid reminders via dm's
 - Callout rare FATE spawns
 - Callout rare hunt spawns
+- Requested: Database for jokes and trivia
 
 ## How to setup Hildibot for development
 
