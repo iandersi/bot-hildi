@@ -14,7 +14,8 @@ const commands = [
     new SlashCommandBuilder().setName('addcactpot').setDescription('Adds Cactpot role to user.'),
     new SlashCommandBuilder().setName('removecactpot').setDescription('Removes Cactpot role from user.'),
     new SlashCommandBuilder().setName('addcraftingupdates').setDescription('Adds CraftingUpdates role to user.'),
-    new SlashCommandBuilder().setName('removecraftingupdates').setDescription('Removes CraftingUpdates role from user.')
+    new SlashCommandBuilder().setName('removecraftingupdates').setDescription('Removes CraftingUpdates role from user.'),
+    new SlashCommandBuilder().setName('telljoke').setDescription('I\'m fun at parties, I swear!')
 ]
     .map(command => command.toJSON());
 
