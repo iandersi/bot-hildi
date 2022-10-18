@@ -26,13 +26,16 @@ Hildibot can:
 - Cactpot role tagged in specific reminder
 
   ![img_5.png](img_5.png)
+  
+-Tell jokes!
+  
+  ![image](https://user-images.githubusercontent.com/77405155/196441574-24ab3101-21d1-4b7c-b626-97c817a38776.png)
+
 
 ### Future plans if I have time
 
 - ~~Slash commands and event handling~~ done
 - Requested: Updating raid reminders via dm's
-- Callout rare FATE spawns
-- Callout rare hunt spawns
 - Requested: Database for jokes and trivia
 
 ## How to setup Hildibot for development
