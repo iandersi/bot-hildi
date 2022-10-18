@@ -1,6 +1,6 @@
 ## About Hildibot
 
-Hildibot is a discord bot that I made for my FFXIV guild. It's a simple bot that greets new members, auto-assigns new members a guest role and auto-kicks members who have the guest role at scheduled time (for example I scheduled it to be everyday at 4AM) unless the members have been assigned another role on the server. Hildibot also posts raid day reminders on our static channel.
+Hildibot is a discord bot that I made for my FFXIV guild to make server and raiding management easier.
 
 ### In short
 
@@ -19,15 +19,15 @@ Hildibot can:
 
     ![img.png](img.png)
 
-- Has slash commands, for example:
+- Listen to slash command interactions, for example:
 
   ![img_4.png](img_4.png)
 
-- Cactpot role tagged in specific reminder
+- Tag users for news, udpates and reminders, for example:
 
   ![img_5.png](img_5.png)
-  
--Tell jokes!
+
+- Tell jokes!
   
   ![image](https://user-images.githubusercontent.com/77405155/196441574-24ab3101-21d1-4b7c-b626-97c817a38776.png)
 
