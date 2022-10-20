@@ -5,6 +5,11 @@ import raidInfo from "./raidInfo.json";
 import reminders from "./reminders.json"
 import {scheduleJob} from "node-schedule";
 import {Joke} from "./joke";
+import {executeAddcactpot} from "./commands/addcactpot";
+import {executeRemoveCactpot} from "./commands/removecactpot";
+import {executeAddCraftingupdates} from "./commands/craftingupdates";
+import {executeRemoveCraftingupdates} from "./commands/removecraftingupdates";
+import {executeTelljoke} from "./commands/telljoke";
 
 let envPath = "./.env";
 
@@ -101,144 +106,11 @@ client.on("guildMemberRemove", (guildMember) => {
 client.on('interactionCreate', async interaction => {
     //check interaction type
     if (!interaction.isCommand()) return;
-
-    if (interaction.commandName === 'addcactpot') {
-        if (!process.env.CACTPOT_ROLE) {
-            console.log('Cactpot role error.');
-            return interaction.reply('Internal error.');
-        }
-        if (!interaction.guild) {
-            console.log('Guild error.')
-            return interaction.reply('Internal error.');
-        }
-
-        let guildMember = interaction.guild.members.cache.get(interaction.user.id);
-
-        if (!guildMember) {
-            console.log('Member not found.');
-            return interaction.reply('Member not found.');
-        }
-
-        if (!guildMember.roles.cache.get(process.env.CACTPOT_ROLE)) {
-            let role = guildMember.guild.roles.cache.get(`${process.env.CACTPOT_ROLE}`)
-            if (role) {
-                await guildMember.roles.add(role);
-                await interaction.reply({content: 'You now have the Cactpot role!', ephemeral: true});
-            } else {
-                return interaction.reply({content: 'Role not found.', ephemeral: true});
-            }
-        } else {
-            return interaction.reply({content:'You already have the Cactpot role.', ephemeral: true});
-        }
-    }
-
-    if (interaction.commandName === "removecactpot") {
-        if (!process.env.CACTPOT_ROLE) {
-            console.log('Cactpot role error.');
-            return interaction.reply({content: 'Internal error.', ephemeral: true});
-        }
-
-        if (!interaction.guild) {
-            console.log('Guild error.')
-            return interaction.reply({content: 'Internal error.', ephemeral: true});
-        }
-
-        let guildMember = interaction.guild.members.cache.get(interaction.user.id);
-
-        if (!guildMember) {
-            console.log('Member not found.');
-            return interaction.reply({content:'Member not found.', ephemeral: true});
-        }
-
-        if (guildMember.roles.cache.get(process.env.CACTPOT_ROLE)) {
-            let role = guildMember.guild.roles.cache.get(`${process.env.CACTPOT_ROLE}`)
-            if (role) {
-                await guildMember.roles.remove(role);
-                await interaction.reply({content:'You no longer have the Cactpot role!', ephemeral: true});
-            } else {
-                return interaction.reply({content:'Role not found.', ephemeral: true});
-            }
-        } else {
-            return interaction.reply({content:'Could not remove role.', ephemeral: true});
-        }
-    }
-
-    if (interaction.commandName === 'addcraftingupdates') {
-        if (!process.env.CRAFTINGUPDATES_ROLE) {
-            console.log('CraftingUpdates role error.');
-            return interaction.reply({content:'Internal error.', ephemeral: true});
-        }
-        if (!interaction.guild) {
-            console.log('Guild error.')
-            return interaction.reply({content:'Internal error.', ephemeral: true});
-        }
-
-        let guildMember = interaction.guild.members.cache.get(interaction.user.id);
-
-        if (!guildMember) {
-            console.log('Member not found.');
-            return interaction.reply({content:'Member not found.', ephemeral: true});
-        }
-
-        if (!guildMember.roles.cache.get(process.env.CRAFTINGUPDATES_ROLE)) {
-            let role = guildMember.guild.roles.cache.get(`${process.env.CRAFTINGUPDATES_ROLE}`)
-            if (role) {
-                await guildMember.roles.add(role);
-                await interaction.reply({content:'You now have the CraftingUpdates role!', ephemeral: true});
-            } else {
-                return interaction.reply({content:'Role not found.', ephemeral: true});
-            }
-        } else {
-            return interaction.reply({content:'You already have the CraftingUpdates role.', ephemeral: true});
-        }
-    }
-
-    if (interaction.commandName === "removecraftingupdates") {
-        if (!process.env.CRAFTINGUPDATES_ROLE) {
-            console.log('CraftingUpdates role error.');
-            return interaction.reply({content:'Internal error.', ephemeral: true});
-        }
-
-        if (!interaction.guild) {
-            console.log('Guild error.')
-            return interaction.reply({content:'Internal error.', ephemeral: true});
-        }
-
-        let guildMember = interaction.guild.members.cache.get(interaction.user.id);
-
-        if (!guildMember) {
-            console.log('Member not found.');
-            return interaction.reply({content:'Member not found.', ephemeral: true});
-        }
-
-        if (guildMember.roles.cache.get(process.env.CRAFTINGUPDATES_ROLE)) {
-            let role = guildMember.guild.roles.cache.get(`${process.env.CRAFTINGUPDATES_ROLE}`)
-            if (role) {
-                await guildMember.roles.remove(role);
-                await interaction.reply({content:'You no longer have the CraftingUpdates role!', ephemeral: true});
-            } else {
-                return interaction.reply({content:'Role not found.', ephemeral: true});
-            }
-        } else {
-            return interaction.reply({content:'Could not remove role.', ephemeral: true});
-        }
-    }
-
-    if (interaction.commandName === "telljoke") {
-        let conn: mariadb.PoolConnection | undefined;
-        try {
-            conn = await pool.getConnection();
-            const randomRow = await conn.query("SELECT id, joke_text FROM joke ORDER BY RAND() limit 1") as Joke[];
-            console.log(randomRow[0].joke_text);
-            await interaction.reply(randomRow[0].joke_text);
-        } catch (err) {
-            console.log('/telljoke failed', err);
-            await interaction.reply('Something went wrong. Try again!');
-        } finally {
-            if (conn) await conn.end();
-        }
-    }
-
+    if (interaction.commandName === 'addcactpot') await executeAddcactpot(interaction);
+    if (interaction.commandName === "removecactpot") await executeRemoveCactpot(interaction);
+    if (interaction.commandName === 'addcraftingupdates') await executeAddCraftingupdates(interaction);
+    if (interaction.commandName === "removecraftingupdates") await executeRemoveCraftingupdates(interaction);
+    if (interaction.commandName === "telljoke") await executeTelljoke(interaction, pool);
 });
 
 
