@@ -1,6 +1,6 @@
 import {CommandInteraction} from "discord.js";
 
-export async function executeRemoveCactpot(interaction: CommandInteraction): Promise<void> {
+export async function executeRemovecactpot(interaction: CommandInteraction): Promise<void> {
         if (!process.env.CACTPOT_ROLE) {
             console.log('Cactpot role error.');
             return interaction.reply({content: 'Internal error.', ephemeral: true});

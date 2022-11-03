@@ -15,7 +15,10 @@ const commands = [
     new SlashCommandBuilder().setName('removecactpot').setDescription('Removes Cactpot role from user.'),
     new SlashCommandBuilder().setName('addcraftingupdates').setDescription('Adds CraftingUpdates role to user.'),
     new SlashCommandBuilder().setName('removecraftingupdates').setDescription('Removes CraftingUpdates role from user.'),
-    new SlashCommandBuilder().setName('telljoke').setDescription('I\'m fun at parties, I swear!')
+    new SlashCommandBuilder().setName('telljoke').setDescription('I\'m fun at parties, I swear!'),
+    new SlashCommandBuilder().setName('rolldice').setDescription('Roll a dice and hope for the best.')
+        .addIntegerOption(option => option.setName('amount').setDescription('desc').setRequired(true))
+        .addIntegerOption(option => option.setName('variant').setDescription('desc').setRequired(true))
 ]
     .map(command => command.toJSON());
 

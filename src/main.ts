@@ -4,12 +4,12 @@ import {Client, Intents, TextChannel} from "discord.js";
 import raidInfo from "./raidInfo.json";
 import reminders from "./reminders.json"
 import {scheduleJob} from "node-schedule";
-import {Joke} from "./joke";
 import {executeAddcactpot} from "./commands/addcactpot";
-import {executeRemoveCactpot} from "./commands/removecactpot";
+import {executeRemovecactpot} from "./commands/removecactpot";
 import {executeAddCraftingupdates} from "./commands/craftingupdates";
 import {executeRemoveCraftingupdates} from "./commands/removecraftingupdates";
 import {executeTelljoke} from "./commands/telljoke";
+import {executeRolldice} from "./commands/rolldice";
 
 let envPath = "./.env";
 
@@ -107,10 +107,11 @@ client.on('interactionCreate', async interaction => {
     //check interaction type
     if (!interaction.isCommand()) return;
     if (interaction.commandName === 'addcactpot') await executeAddcactpot(interaction);
-    if (interaction.commandName === "removecactpot") await executeRemoveCactpot(interaction);
+    if (interaction.commandName === 'removecactpot') await executeRemovecactpot(interaction);
     if (interaction.commandName === 'addcraftingupdates') await executeAddCraftingupdates(interaction);
-    if (interaction.commandName === "removecraftingupdates") await executeRemoveCraftingupdates(interaction);
-    if (interaction.commandName === "telljoke") await executeTelljoke(interaction, pool);
+    if (interaction.commandName === 'removecraftingupdates') await executeRemoveCraftingupdates(interaction);
+    if (interaction.commandName === 'telljoke') await executeTelljoke(interaction, pool);
+    if (interaction.commandName === 'rolldice') await executeRolldice(interaction);
 });
 
 

@@ -31,12 +31,18 @@ Hildibot can:
   
   ![image](https://user-images.githubusercontent.com/77405155/196441574-24ab3101-21d1-4b7c-b626-97c817a38776.png)
 
+- Roll dice!
+  ![img_7.png](img_7.png)
+  ![img_6.png](img_6.png)
+
 
 ### Future plans if I have time
 
 - ~~Slash commands and event handling~~ done
+- Put raidinfo and reminders into MariaDB instead of having separate jsons
 - Requested: Updating raid reminders via dm's
-- Requested: Database for jokes and trivia
+- Requested: Database for jokes and trivia /_joke part done_
+- ~~Requested: roll dice / deathrolling~~ done
 
 ## How to setup Hildibot for development
 
@@ -48,6 +54,7 @@ After you've cloned this repository you need to configure the following files wi
 
 - .env
 - raidInfo.json
+- reminders.json
 
 #### .env template:   
 ```
@@ -61,6 +68,12 @@ SCHEDULE_GUEST_KICK_JOB= Cron schedule expression for kicking members
 STATIC_CHANNEL= Server channel ID for channel with raiding members
 CACTPOT_ROLE=Role to be tagged for the cactpot ticket reminder
 EVENT_CHANNEL=Channel where the cactpot reminder goes (you can change this to anything you like that suits your needs better)
+
+//For MariaDB
+HOST=
+USER=
+PASSWORD=
+DATABASE=
 ```
 
 #### raidInfo.json template:
