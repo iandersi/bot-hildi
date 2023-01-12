@@ -10,6 +10,8 @@ import {executeAddCraftingupdates} from "./commands/craftingupdates";
 import {executeRemoveCraftingupdates} from "./commands/removecraftingupdates";
 import {executeTelljoke} from "./commands/telljoke";
 import {executeRolldice} from "./commands/rolldice";
+import {executeFindjoke} from "./commands/findjoke";
+import {executeAddjoke} from "./commands/addjoke";
 
 let envPath = "./.env";
 
@@ -42,7 +44,7 @@ function raidDayReminder(imageToPost: string, messageToPost: string) {
         let staticChannel = guild.channels.cache.get(`${process.env.STATIC_CHANNEL}`);
         if (staticChannel?.isText()) {
             staticChannel.send({files: [imageToPost], content: `@everyone ${messageToPost}`})
-                .then(() => console.log("Reminder done."));
+                .then(() => console.log("Reminder done.")).catch(reason => console.log(`Failed to post reminder. Reason: ${reason}`));
         }
     })
 }
@@ -112,6 +114,13 @@ client.on('interactionCreate', async interaction => {
     if (interaction.commandName === 'removecraftingupdates') await executeRemoveCraftingupdates(interaction);
     if (interaction.commandName === 'telljoke') await executeTelljoke(interaction, pool);
     if (interaction.commandName === 'rolldice') await executeRolldice(interaction);
+    if (interaction.commandName === 'config') {
+        if (interaction.options.getSubcommand() === 'findjoke') {
+            await executeFindjoke(interaction, pool);
+        } else if (interaction.options.getSubcommand() === 'addjoke') {
+            await executeAddjoke(interaction, pool);
+        }
+    }
 });
 
 

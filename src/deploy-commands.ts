@@ -17,8 +17,11 @@ const commands = [
     new SlashCommandBuilder().setName('removecraftingupdates').setDescription('Removes CraftingUpdates role from user.'),
     new SlashCommandBuilder().setName('telljoke').setDescription('I\'m fun at parties, I swear!'),
     new SlashCommandBuilder().setName('rolldice').setDescription('Roll a dice and hope for the best.')
-        .addIntegerOption(option => option.setName('amount').setDescription('desc').setRequired(true))
-        .addIntegerOption(option => option.setName('variant').setDescription('desc').setRequired(true))
+        .addIntegerOption(option => option.setName('amount').setDescription('Amount of dice rolled').setRequired(true))
+        .addIntegerOption(option => option.setName('variant').setDescription('Dice variant').setRequired(true)),
+    new SlashCommandBuilder().setName('config').setDescription('Add or delete something')
+        .addSubcommand(subcommand => subcommand.setName('addjoke').setDescription('Add joke'))
+        .addSubcommand(subcommand => subcommand.setName('findjoke').setDescription('Find joke').addIntegerOption(option => option.setName('id').setDescription('Find by ID')).addStringOption(option => option.setName('string').setDescription('Find by sentence')))
 ]
     .map(command => command.toJSON());
 
