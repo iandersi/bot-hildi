@@ -24,7 +24,7 @@ const commands = [
         .addSubcommand(subcommand => subcommand.setName('findjoke').setDescription('Find joke')
             .addIntegerOption(option => option.setName('findbyid').setDescription('Find by ID'))
             .addStringOption(option => option.setName('findbystring').setDescription('Find by sentence'))
-            .addStringOption(option => option.setName('findbyindex').setDescription('Find by first or last index')))
+            .addStringOption(option => option.setName('findbyindex').setDescription('Find by first or last index').setChoices({name: "First", value: "first"}, {name: "Last", value:"last"})))
 ]
     .map(command => command.toJSON());
 

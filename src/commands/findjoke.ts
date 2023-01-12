@@ -6,16 +6,12 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
     let jokeId = interaction.options.getInteger('findbyid');
     let jokeSentence = interaction.options.getString('findbystring');
     let jokeIndexWord = interaction.options.getString('findbyindex');
-    let first: string = "first";
-    let last: string = "last";
-    let isJokeIndexWordFirst: boolean = first ===  jokeIndexWord;
-    let isJokeIndexWordLast: boolean = last === jokeIndexWord;
+    let isJokeIndexWord: boolean = jokeIndexWord === "first" || jokeIndexWord === "last";
 
     if (jokeId === null && jokeSentence === null && jokeIndexWord === null) return interaction.reply({content: 'Search conditions cannot be null.', ephemeral: true});
     if (jokeId != null && jokeId < 1 ) return interaction.reply({content: "ID cannot be less than 1.", ephemeral: true});
     if (jokeSentence && jokeSentence.length < 3) return interaction.reply({content: "Search word cannot be less than 3 letters.", ephemeral: true});
-    if (jokeIndexWord && !isJokeIndexWordFirst && !isJokeIndexWordLast) return interaction.reply({content: "Search index by typing ***first*** or ***last***.", ephemeral: true});
-
+    if (jokeIndexWord && !isJokeIndexWord) return interaction.reply({content: "Search index by typing ***first*** or ***last***.", ephemeral: true});
 
     let conn: mariadb.PoolConnection | undefined;
 
@@ -55,11 +51,11 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
         }
     }
 
-    if (jokeIndexWord && isJokeIndexWordFirst) {
+    if (jokeIndexWord === "first") {
         try {
             conn = await pool.getConnection();
             const joke = await conn.query("SELECT * FROM joke ORDER BY id ASC LIMIT 1");
-            await interaction.reply(`The first row is **id:** ${joke[0].id} **joke_text:** ${joke[0].joke_text}`);
+            await interaction.reply(`The first row is\n**id:** ${joke[0].id} **joke_text:** ${joke[0].joke_text}`);
 
         } catch (err) {
             console.log(err);
@@ -68,11 +64,11 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
             if (conn) await conn.end();
             console.log('Connection ended.');
         }
-    } else if (jokeIndexWord && isJokeIndexWordLast) {
+    } else if (jokeIndexWord === "last") {
         try {
             conn = await pool.getConnection();
             const joke = await conn.query("SELECT * FROM joke ORDER BY id DESC LIMIT 1");
-            await interaction.reply(`The last row is **id:** ${joke[0].id} **joke_text:** ${joke[0].joke_text}`);
+            await interaction.reply(`The last row is\n**id:** ${joke[0].id} **joke_text:** ${joke[0].joke_text}`);
 
         } catch (err) {
             console.log(err);
