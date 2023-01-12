@@ -21,7 +21,10 @@ const commands = [
         .addIntegerOption(option => option.setName('variant').setDescription('Dice variant').setRequired(true)),
     new SlashCommandBuilder().setName('config').setDescription('Add or delete something')
         .addSubcommand(subcommand => subcommand.setName('addjoke').setDescription('Add joke'))
-        .addSubcommand(subcommand => subcommand.setName('findjoke').setDescription('Find joke').addIntegerOption(option => option.setName('id').setDescription('Find by ID')).addStringOption(option => option.setName('string').setDescription('Find by sentence')))
+        .addSubcommand(subcommand => subcommand.setName('findjoke').setDescription('Find joke')
+            .addIntegerOption(option => option.setName('findbyid').setDescription('Find by ID'))
+            .addStringOption(option => option.setName('findbystring').setDescription('Find by sentence'))
+            .addStringOption(option => option.setName('findbyindex').setDescription('Find by first or last index')))
 ]
     .map(command => command.toJSON());
 
