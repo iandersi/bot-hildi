@@ -1,0 +1,21 @@
+import * as mariadb from "mariadb";
+import {Joke} from "./joke";
+
+
+//Functions related to config-command
+
+export async function getLatestJoke(conn: mariadb.PoolConnection) {
+        return conn.query("SELECT * FROM joke ORDER BY id DESC LIMIT 1");
+}
+
+export async function getFirstJoke(conn: mariadb.PoolConnection) {
+        return conn.query("SELECT * FROM joke ORDER BY id ASC LIMIT 1");
+}
+
+export async function getJokeById(conn: mariadb.PoolConnection, jokeId: number) {
+        return await conn.query("SELECT id, joke_text FROM joke WHERE id = ?",[jokeId]) as Joke[];
+}
+
+export async function getJokeBySearchWord(conn: mariadb.PoolConnection, jokeSentence: string) {
+        return await conn.query("SELECT id, joke_text FROM joke WHERE joke_text LIKE ?",['%' + jokeSentence + '%']) as Joke[];
+}

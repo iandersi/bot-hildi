@@ -20,8 +20,9 @@ const commands = [
         .addIntegerOption(option => option.setName('amount').setDescription('Amount of dice rolled').setRequired(true))
         .addIntegerOption(option => option.setName('variant').setDescription('Dice variant').setRequired(true)),
     new SlashCommandBuilder().setName('config').setDescription('Add or delete something')
-        .addSubcommand(subcommand => subcommand.setName('addjoke').setDescription('Add joke'))
-        .addSubcommand(subcommand => subcommand.setName('findjoke').setDescription('Find joke')
+        .addSubcommand(subcommand => subcommand.setName('addjoke').setDescription('Add joke to database')
+            .addStringOption(option => option.setName('addjoke').setDescription('Add joke')))
+        .addSubcommand(subcommand => subcommand.setName('findjoke').setDescription('Find joke in database')
             .addIntegerOption(option => option.setName('findbyid').setDescription('Find by ID'))
             .addStringOption(option => option.setName('findbystring').setDescription('Find by sentence'))
             .addStringOption(option => option.setName('findbyindex').setDescription('Find by first or last index').setChoices({name: "First", value: "first"}, {name: "Last", value:"last"})))
