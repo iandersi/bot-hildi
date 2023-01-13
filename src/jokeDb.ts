@@ -4,16 +4,23 @@ import {Joke} from "./joke";
 
 //Functions related to config-command
 
+export async function addJoke(conn: mariadb.PoolConnection, jokeText: string) {
+        return conn.query("INSERT INTO joke (joke_text) VALUES(?)", jokeText.replace(/\\n/g, "\n"));
+}
+
 export async function getLatestJoke(conn: mariadb.PoolConnection) {
-        return conn.query("SELECT * FROM joke ORDER BY id DESC LIMIT 1");
+        const jokes = await conn.query("SELECT * FROM joke ORDER BY id DESC LIMIT 1") as Joke[];
+        return jokes[0];
 }
 
 export async function getFirstJoke(conn: mariadb.PoolConnection) {
-        return conn.query("SELECT * FROM joke ORDER BY id ASC LIMIT 1");
+        const jokes = await conn.query("SELECT * FROM joke ORDER BY id ASC LIMIT 1") as Joke[];
+        return jokes[0];
 }
 
 export async function getJokeById(conn: mariadb.PoolConnection, jokeId: number) {
-        return await conn.query("SELECT id, joke_text FROM joke WHERE id = ?",[jokeId]) as Joke[];
+        const jokes = await conn.query("SELECT id, joke_text FROM joke WHERE id = ?",[jokeId]) as Joke[];
+        return jokes[0];
 }
 
 export async function getJokeBySearchWord(conn: mariadb.PoolConnection, jokeSentence: string) {

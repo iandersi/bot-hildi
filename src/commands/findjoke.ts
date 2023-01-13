@@ -3,10 +3,10 @@ import * as mariadb from "mariadb";
 import {getFirstJoke, getJokeById, getJokeBySearchWord, getLatestJoke} from "../jokeDb";
 
 export async function executeFindjoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
-    let jokeId = interaction.options.getInteger('findbyid');
-    let jokeSentence = interaction.options.getString('findbystring');
-    let jokeIndexWord = interaction.options.getString('findbyindex');
-    let isJokeIndexWord: boolean = jokeIndexWord === "first" || jokeIndexWord === "last";
+    const jokeId = interaction.options.getInteger('findbyid');
+    const jokeSentence = interaction.options.getString('findbystring');
+    const jokeIndexWord = interaction.options.getString('findbyindex');
+    const isJokeIndexWord: boolean = jokeIndexWord === "first" || jokeIndexWord === "last";
 
     if (jokeId === null && jokeSentence === null && jokeIndexWord === null) return interaction.reply({content: 'Search conditions cannot be null.', ephemeral: true});
     if (jokeId != null && jokeId < 1 ) return interaction.reply({content: "ID cannot be less than 1.", ephemeral: true});
@@ -19,7 +19,7 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
         try {
             conn = await pool.getConnection();
             const joke = await getJokeById(conn, jokeId);
-            return interaction.reply(`**id:** "${joke[0].id}" \n**joke_text:** "${joke[0].joke_text}"`);
+            return interaction.reply(`**id:** "${joke.id}" \n**joke_text:** "${joke.joke_text}"`);
         } catch (err) {
             console.log(err);
             await interaction.reply({content: "Something went wrong. Try again!", ephemeral: true});
@@ -55,7 +55,7 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
         try {
             conn = await pool.getConnection();
             const joke = await getFirstJoke(conn);
-            await interaction.reply(`The first row is\n**id:** ${joke[0].id} **joke_text:** ${joke[0].joke_text}`);
+            await interaction.reply(`The first row is\n**id:** ${joke.id} **joke_text:** ${joke.joke_text}`);
 
         } catch (err) {
             console.log(err);
@@ -68,7 +68,7 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
         try {
             conn = await pool.getConnection();
             const joke = await getLatestJoke(conn);
-            return await interaction.reply(`The last row is\n**id:** ${joke[0].id} **joke_text:** ${joke[0].joke_text}`);
+            return await interaction.reply(`The last row is\n**id:** ${joke.id} **joke_text:** ${joke.joke_text}`);
 
         } catch (err) {
             console.log(err);
