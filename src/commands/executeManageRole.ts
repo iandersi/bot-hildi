@@ -16,7 +16,7 @@ export async function executeManageRole(interaction: CommandInteraction): Promis
 
     if (!interaction.guild) {
         console.log('Guild error.')
-        return interaction.reply('Internal error.');
+        return interaction.reply({content: 'Internal error.', ephemeral: true});
     }
 
     const requestedRoleToAdd = interaction.options.getString('addrole');

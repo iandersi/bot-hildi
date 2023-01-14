@@ -3,6 +3,23 @@ import * as mariadb from "mariadb";
 import {getFirstJoke, getJokeById, getJokeBySearchWord, getLatestJoke} from "../jokeDb";
 
 export async function executeFindjoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
+
+    const configRole = process.env.HILDIBOT_CONFIG_ROLE;
+    if (!configRole) return;
+
+    if (!interaction.guild) {
+        console.log('Guild error.')
+        return interaction.reply({content: 'Internal error.', ephemeral: true});
+    }
+
+    const guildMember = interaction.guild.members.cache.get(interaction.user.id);
+    if (!guildMember) return interaction.reply({content: 'Member not found.', ephemeral: true});
+
+    if (!guildMember.roles.cache.get(configRole)) return interaction.reply({
+        content: 'You do not have permissions to use this command.',
+        ephemeral: true
+    });
+
     const jokeId = interaction.options.getInteger('findbyid');
     const jokeSentence = interaction.options.getString('findbystring');
     const jokeIndexWord = interaction.options.getString('findbyindex');
