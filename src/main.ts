@@ -12,6 +12,7 @@ import {executeTelljoke} from "./commands/telljoke";
 import {executeRolldice} from "./commands/rolldice";
 import {executeFindjoke} from "./commands/findjoke";
 import {executeAddjoke} from "./commands/addjoke";
+import {executeAddRole} from "./commands/addrole";
 
 let envPath = "./.env";
 
@@ -108,6 +109,7 @@ client.on("guildMemberRemove", (guildMember) => {
 client.on('interactionCreate', async interaction => {
     //check interaction type
     if (!interaction.isCommand()) return;
+    if (interaction.commandName === 'addrole') await executeAddRole(interaction);
     if (interaction.commandName === 'addcactpot') await executeAddcactpot(interaction);
     if (interaction.commandName === 'removecactpot') await executeRemovecactpot(interaction);
     if (interaction.commandName === 'addcraftingupdates') await executeAddCraftingupdates(interaction);

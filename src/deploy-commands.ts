@@ -11,6 +11,9 @@ if (process.argv[2]) {
 dotenv.config({path: envPath});
 
 const commands = [
+    new SlashCommandBuilder().setName('addrole').setDescription('Add role to user.')
+        .addStringOption(option => option.setName('role').setDescription('Choose role')
+            .setChoices({name: "CactpotReminder", value: "cactpot"},{name: "CraftingUpdates", value: "craftingupdates"}, {name: "RaidNotifications", value: "raid"}, {name: "SpoilerChannel", value: "spoiler"})),
     new SlashCommandBuilder().setName('addcactpot').setDescription('Adds Cactpot role to user.'),
     new SlashCommandBuilder().setName('removecactpot').setDescription('Removes Cactpot role from user.'),
     new SlashCommandBuilder().setName('addcraftingupdates').setDescription('Adds CraftingUpdates role to user.'),

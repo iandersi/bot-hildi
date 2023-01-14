@@ -4,6 +4,7 @@ import {addJoke, getLatestJoke} from "../jokeDb";
 
 export async function executeAddjoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
 
+    // muuta tää > roolit
     const role = process.env.HILDIBOT_CONFIG_ROLE;
     const interactionUserId = interaction.user.id;
     const jokeText = interaction.options.getString('addjoke');
