@@ -31,18 +31,32 @@ Hildibot can:
   
   ![image](https://user-images.githubusercontent.com/77405155/196441574-24ab3101-21d1-4b7c-b626-97c817a38776.png)
 
+- Users with specified role can manage Hildi's joke database:
+
+  ![img_8.png](img_8.png)
+
+  ![img_9.png](img_9.png)
+
 - Roll dice!
+
   ![img_7.png](img_7.png)
+
   ![img_6.png](img_6.png)
 
 
 ### Future plans if I have time
 
-- ~~Slash commands and event handling~~ done
+Todo
+
 - Put raidinfo and reminders into MariaDB instead of having separate jsons
 - Requested: Updating raid reminders via dm's
-- Requested: Database for jokes and trivia /_joke part done_
-- ~~Requested: roll dice / deathrolling~~ done
+
+Done
+- Slash commands and event handling 
+- Requested: roll dice / deathrolling 
+- Requested: Joke command and database for jokes
+- Requested: Add, find and remove jokes from database
+- Role managment commands
 
 ## How to setup Hildibot for development
 
@@ -62,7 +76,11 @@ BOT_TOKEN= Your bot token
 CLIENT_ID=Client ID found in devtools portal
 GUILD_ID=Server ID found in Discord
 WELCOME_CHANNEL= Server channel ID for welcome messages
-GUEST_ROLE= Role ID for role that gets kicked 
+GUEST_ROLE= Role ID for role that gets kicked
+CRAFTINGUPDATES_ROLE=Role for people who want to get tagged for crafting updates
+RAID_ROLE=Role for people who want to get tagged for raids
+SPOILER_ROLE=Role for people who want access to spoiler channel
+HILDIBOT_CONFIG_ROLE=Role that is allowed to use Hildibots /config command
 BOT_LOG_CHANNEL= Server channel where bot sends notificatons of joined/kicked members
 SCHEDULE_GUEST_KICK_JOB= Cron schedule expression for kicking members 
 STATIC_CHANNEL= Server channel ID for channel with raiding members
@@ -116,8 +134,8 @@ You can register commands with the following command in the terminal:
 > npm run registerCommands
 ```
 
+#### raidInfo.json template:
 ```
-//Reminders JSON example
 [
   {
     "day": "saturday (cactpot reminder)", //Dev reminder, not used anywhere
