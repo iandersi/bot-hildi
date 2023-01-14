@@ -2,7 +2,7 @@ import {CommandInteraction} from "discord.js";
 import * as mariadb from "mariadb";
 import {Joke} from "../joke";
 
-export async function executeTelljoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
+export async function executeTellJoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
         let conn: mariadb.PoolConnection | undefined;
         try {
             conn = await pool.getConnection();

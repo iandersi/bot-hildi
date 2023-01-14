@@ -2,7 +2,7 @@ import {CommandInteraction} from "discord.js";
 import * as mariadb from "mariadb";
 import {getFirstJoke, getJokeById, getJokeBySearchWord, getLatestJoke} from "../jokeDb";
 
-export async function executeFindjoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
+export async function executeFindJoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
 
     const configRole = process.env.HILDIBOT_CONFIG_ROLE;
     if (!configRole) return;
@@ -36,6 +36,7 @@ export async function executeFindjoke(interaction: CommandInteraction, pool: mar
         try {
             conn = await pool.getConnection();
             const joke = await getJokeById(conn, jokeId);
+            if (!joke) return interaction.reply({content: 'Joke not found.', ephemeral: true});
             return interaction.reply(`**id:** "${joke.id}" \n**joke_text:** "${joke.joke_text}"`);
         } catch (err) {
             console.log(err);

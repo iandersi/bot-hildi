@@ -1,6 +1,6 @@
 import {CommandInteraction} from "discord.js";
 
-export async function executeRolldice(interaction: CommandInteraction): Promise<void> {
+export async function executeRollDice(interaction: CommandInteraction): Promise<void> {
     const numberOfDice = interaction.options.getInteger('amount');
     const variant = interaction.options.getInteger('variant');
 

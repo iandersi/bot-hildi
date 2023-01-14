@@ -13,11 +13,12 @@ import {Client, Intents, TextChannel} from "discord.js";
 import raidInfo from "./raidInfo.json";
 import reminders from "./reminders.json"
 import {scheduleJob} from "node-schedule";
-import {executeTelljoke} from "./commands/telljoke";
-import {executeRolldice} from "./commands/rolldice";
-import {executeFindjoke} from "./commands/findjoke";
-import {executeAddjoke} from "./commands/addjoke";
+import {executeTellJoke} from "./commands/tellJoke";
+import {executeRollDice} from "./commands/rollDice";
+import {executeFindJoke} from "./commands/findJoke";
+import {executeAddJoke} from "./commands/addJoke";
 import {executeManageRole} from "./commands/executeManageRole";
+import {executeDeleteJoke} from "./commands/deleteJoke";
 
 
 
@@ -109,13 +110,15 @@ client.on('interactionCreate', async interaction => {
     //check interaction type
     if (!interaction.isCommand()) return;
     if (interaction.commandName === 'role') await executeManageRole(interaction);
-    if (interaction.commandName === 'telljoke') await executeTelljoke(interaction, pool);
-    if (interaction.commandName === 'rolldice') await executeRolldice(interaction);
+    if (interaction.commandName === 'telljoke') await executeTellJoke(interaction, pool);
+    if (interaction.commandName === 'rolldice') await executeRollDice(interaction);
     if (interaction.commandName === 'config') {
         if (interaction.options.getSubcommand() === 'findjoke') {
-            await executeFindjoke(interaction, pool);
+            await executeFindJoke(interaction, pool);
         } else if (interaction.options.getSubcommand() === 'addjoke') {
-            await executeAddjoke(interaction, pool);
+            await executeAddJoke(interaction, pool);
+        } else if (interaction.options.getSubcommand() === 'deletejoke') {
+            await executeDeleteJoke(interaction, pool);
         }
     }
 });

@@ -20,9 +20,14 @@ export async function getFirstJoke(conn: mariadb.PoolConnection) {
 
 export async function getJokeById(conn: mariadb.PoolConnection, jokeId: number) {
         const jokes = await conn.query("SELECT id, joke_text FROM joke WHERE id = ?",[jokeId]) as Joke[];
+        if (jokes.length === 0) return null;
         return jokes[0];
 }
 
 export async function getJokeBySearchWord(conn: mariadb.PoolConnection, jokeSentence: string) {
         return await conn.query("SELECT id, joke_text FROM joke WHERE joke_text LIKE ?",['%' + jokeSentence + '%']) as Joke[];
+}
+
+export async function deleteJokeById(conn: mariadb.PoolConnection, jokeId: number) {
+        return await conn.query("DELETE FROM joke WHERE id = ?", jokeId);
 }

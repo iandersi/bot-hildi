@@ -2,7 +2,7 @@ import {CommandInteraction} from "discord.js";
 import * as mariadb from "mariadb";
 import {addJoke, getLatestJoke} from "../jokeDb";
 
-export async function executeAddjoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
+export async function executeAddJoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
 
     const configRole = process.env.HILDIBOT_CONFIG_ROLE;
     if (!configRole) return;
