@@ -11,13 +11,11 @@ if (process.argv[2]) {
 dotenv.config({path: envPath});
 
 const commands = [
-    new SlashCommandBuilder().setName('addrole').setDescription('Add role to user.')
-        .addStringOption(option => option.setName('role').setDescription('Choose role')
-            .setChoices({name: "CactpotReminder", value: "cactpot"},{name: "CraftingUpdates", value: "craftingupdates"}, {name: "RaidNotifications", value: "raid"}, {name: "SpoilerChannel", value: "spoiler"})),
-    new SlashCommandBuilder().setName('addcactpot').setDescription('Adds Cactpot role to user.'),
-    new SlashCommandBuilder().setName('removecactpot').setDescription('Removes Cactpot role from user.'),
-    new SlashCommandBuilder().setName('addcraftingupdates').setDescription('Adds CraftingUpdates role to user.'),
-    new SlashCommandBuilder().setName('removecraftingupdates').setDescription('Removes CraftingUpdates role from user.'),
+    new SlashCommandBuilder().setName('role').setDescription('Manage roles.')
+        .addStringOption(option => option.setName('addrole').setDescription('Add role')
+            .setChoices({name: "Cactpot Reminder", value: "cactpot"},{name: "Crafting Updates", value: "craftingupdates"}, {name: "Raid Notifications", value: "raid"}, {name: "Spoiler Channel", value: "spoiler"}))
+        .addStringOption(option => option.setName('removerole').setDescription('Remove role')
+            .setChoices({name: "Cactpot Reminder", value: "cactpot"},{name: "Crafting Updates", value: "craftingupdates"}, {name: "Raid Notifications", value: "raid"}, {name: "Spoiler Channel", value: "spoiler"})),
     new SlashCommandBuilder().setName('telljoke').setDescription('I\'m fun at parties, I swear!'),
     new SlashCommandBuilder().setName('rolldice').setDescription('Roll a dice and hope for the best.')
         .addIntegerOption(option => option.setName('amount').setDescription('Amount of dice rolled').setRequired(true))

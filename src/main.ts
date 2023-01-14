@@ -1,18 +1,4 @@
 import * as dotenv from "dotenv";
-import * as mariadb from 'mariadb';
-import {Client, Intents, TextChannel} from "discord.js";
-import raidInfo from "./raidInfo.json";
-import reminders from "./reminders.json"
-import {scheduleJob} from "node-schedule";
-import {executeAddcactpot} from "./commands/addcactpot";
-import {executeRemovecactpot} from "./commands/removecactpot";
-import {executeAddCraftingupdates} from "./commands/craftingupdates";
-import {executeRemoveCraftingupdates} from "./commands/removecraftingupdates";
-import {executeTelljoke} from "./commands/telljoke";
-import {executeRolldice} from "./commands/rolldice";
-import {executeFindjoke} from "./commands/findjoke";
-import {executeAddjoke} from "./commands/addjoke";
-import {executeAddRole} from "./commands/addrole";
 
 let envPath = "./.env";
 
@@ -21,6 +7,19 @@ if (process.argv[2]) {
     envPath += "." + process.argv[2];
 }
 dotenv.config({path: envPath});
+
+import * as mariadb from 'mariadb';
+import {Client, Intents, TextChannel} from "discord.js";
+import raidInfo from "./raidInfo.json";
+import reminders from "./reminders.json"
+import {scheduleJob} from "node-schedule";
+import {executeTelljoke} from "./commands/telljoke";
+import {executeRolldice} from "./commands/rolldice";
+import {executeFindjoke} from "./commands/findjoke";
+import {executeAddjoke} from "./commands/addjoke";
+import {executeManageRole} from "./commands/executeManageRole";
+
+
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES]});
 
@@ -109,11 +108,7 @@ client.on("guildMemberRemove", (guildMember) => {
 client.on('interactionCreate', async interaction => {
     //check interaction type
     if (!interaction.isCommand()) return;
-    if (interaction.commandName === 'addrole') await executeAddRole(interaction);
-    if (interaction.commandName === 'addcactpot') await executeAddcactpot(interaction);
-    if (interaction.commandName === 'removecactpot') await executeRemovecactpot(interaction);
-    if (interaction.commandName === 'addcraftingupdates') await executeAddCraftingupdates(interaction);
-    if (interaction.commandName === 'removecraftingupdates') await executeRemoveCraftingupdates(interaction);
+    if (interaction.commandName === 'role') await executeManageRole(interaction);
     if (interaction.commandName === 'telljoke') await executeTelljoke(interaction, pool);
     if (interaction.commandName === 'rolldice') await executeRolldice(interaction);
     if (interaction.commandName === 'config') {
