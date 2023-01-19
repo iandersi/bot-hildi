@@ -94,6 +94,15 @@ PASSWORD=
 DATABASE=
 ```
 
+#### MariaDB structure:
+```
+CREATE TABLE `joke` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `joke_text` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4;s
+```
+
 #### raidInfo.json template:
 ```
 [
