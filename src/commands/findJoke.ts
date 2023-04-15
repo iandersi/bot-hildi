@@ -1,10 +1,16 @@
 import {CommandInteraction} from "discord.js";
 import * as mariadb from "mariadb";
 import {getFirstJoke, getJokeById, getJokeBySearchWord, getLatestJoke} from "../jokeDb";
+import {getConfigurationParameter} from "../configDb";
 
 export async function executeFindJoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
 
-    const configRole = process.env.HILDIBOT_CONFIG_ROLE;
+    if (!interaction.guildId) {
+        console.log('Guild ID error.')
+        return interaction.reply({content: 'Internal error.', ephemeral: true});
+    }
+
+    const configRole = await getConfigurationParameter(pool, interaction.guildId, "hildibot_config_role");
     if (!configRole) return;
 
     if (!interaction.guild) {

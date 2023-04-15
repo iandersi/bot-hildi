@@ -19,6 +19,7 @@ import {executeFindJoke} from "./commands/findJoke";
 import {executeAddJoke} from "./commands/addJoke";
 import {executeManageRole} from "./commands/executeManageRole";
 import {executeDeleteJoke} from "./commands/deleteJoke";
+import {getConfigurationParameter} from "./configDb";
 
 
 
@@ -41,8 +42,10 @@ let scheduledJobsRaids = raidInfo.map(raidDay => scheduleJob(raidDay.jobSchedule
 let scheduledJobsReminders = reminders.map(reminders => scheduleJob(reminders.jobSchedule, () => fcReminders(reminders.message)));
 
 function raidDayReminder(imageToPost: string, messageToPost: string) {
-    client.guilds.cache.forEach(guild => {
-        let staticChannel = guild.channels.cache.get(`${process.env.STATIC_CHANNEL}`);
+    client.guilds.cache.forEach(async guild => {
+        const staticChannelId= await getConfigurationParameter(pool, guild.id, 'static_channel');
+        if (!staticChannelId) return console.log(`Cannot post raid day reminder for guild ${guild.name} (${guild.id})`);
+        let staticChannel = guild.channels.cache.get(staticChannelId);
         if (staticChannel?.isText()) {
             staticChannel.send({files: [imageToPost], content: `@everyone ${messageToPost}`})
                 .then(() => console.log("Reminder done.")).catch(reason => console.log(`Failed to post reminder. Reason: ${reason}`));
@@ -50,9 +53,11 @@ function raidDayReminder(imageToPost: string, messageToPost: string) {
     })
 }
 
-function fcReminders(messageToPost: string) {
-    client.guilds.cache.forEach(guild => {
-        let generalChatChannel = guild.channels.cache.get(`${process.env.CHAT_CHANNEL}`);
+ function fcReminders(messageToPost: string) {
+    client.guilds.cache.forEach(async guild => {
+        const chatChannelId = await getConfigurationParameter(pool, guild.id, 'chat_channel')
+        if (!chatChannelId) return console.log(`Cannot post reminder for guild ${guild.name} (${guild.id})`);
+        let generalChatChannel = guild.channels.cache.get(chatChannelId);
         if (generalChatChannel?.isText()) {
             generalChatChannel.send({content: `${messageToPost}`}).then(() => console.log("Reminder done."));
         }
@@ -61,8 +66,10 @@ function fcReminders(messageToPost: string) {
 
 
 const kickJob = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function () {
-    client.guilds.cache.forEach(function (guild) {
-        let role = guild.roles.cache.get(`${process.env.GUEST_ROLE}`);
+    client.guilds.cache.forEach(async function (guild) {
+        const guestRoleId = await getConfigurationParameter(pool, guild.id, 'guest_role')
+        if (!guestRoleId) return console.log(`Cannot get guest role for guild ${guild.name} (${guild.id})`);
+        let role = guild.roles.cache.get(guestRoleId);
         if (role) {
             if (role.members.size === 0) {
                 console.log('No guests.')
@@ -79,48 +86,65 @@ const kickJob = scheduleJob(`${process.env.SCHEDULE_GUEST_KICK_JOB}`, function (
 });
 
 
-client.on("guildMemberAdd", (guildMember) => {
-    let guildChannel = guildMember.guild.channels.cache.get(`${process.env.WELCOME_CHANNEL}`);
+client.on("guildMemberAdd", async (guildMember) => {
+    console.log('user joined', guildMember);
+    const welcomeChannelId = await getConfigurationParameter(pool, guildMember.guild.id, 'welcome_channel')
+    if (!welcomeChannelId) return console.log(`Cannot get guest role for guild ${guildMember.guild.name} (${guildMember.guild.id})`);
+
+    let guildChannel = guildMember.guild.channels.cache.get(welcomeChannelId);
     let newMemberID = guildMember.id;
     if (guildChannel?.isText()) {
-        (guildChannel as unknown as TextChannel).send(`Welcome, <@${newMemberID}>!`);
+        await (guildChannel as unknown as TextChannel).send(`Welcome, <@${newMemberID}>!`);
     }
 
-    let guildBotLogChannel = guildMember.guild.channels.cache.get(`${process.env.BOT_LOG_CHANNEL}`);
+    const botLogChannelId = await getConfigurationParameter(pool, guildMember.guild.id, 'bot_log_channel')
+    if (!botLogChannelId) return console.log(`Cannot get guest role for guild ${guildMember.guild.name} (${guildMember.guild.id})`);
+
+    let guildBotLogChannel = guildMember.guild.channels.cache.get(botLogChannelId);
+
     if (guildBotLogChannel?.isText()) {
-        (guildBotLogChannel as unknown as TextChannel).send(`New member joined the server!\nMember nickname: <@${newMemberID}>`)
+        await (guildBotLogChannel as unknown as TextChannel).send(`New member joined the server!\nMember nickname: <@${newMemberID}>`)
     }
 
-    let role = guildMember.guild.roles.cache.get(`${process.env.GUEST_ROLE}`);
+    const guestRoleId = await getConfigurationParameter(pool, guildMember.guild.id, 'guest_role')
+    if (!guestRoleId) return console.log(`Cannot get guest role for guild ${guildMember.guild.name} (${guildMember.guild.id})`);
+    let role = guildMember.guild.roles.cache.get(guestRoleId);
+
     if (role) {
-        guildMember.roles.add(role);
+        await guildMember.roles.add(role);
     }
 
 });
 
-client.on("guildMemberRemove", (guildMember) => {
+client.on("guildMemberRemove", async (guildMember) => {
+
+    const botLogChannelId = await getConfigurationParameter(pool, guildMember.guild.id, 'bot_log_channel')
+    if (!botLogChannelId) return console.log(`Cannot get guest role for guild ${guildMember.guild.name} (${guildMember.guild.id})`);
+
     let memberDisplayName = guildMember.displayName;
-    let guildBotLogChannel = guildMember.guild.channels.cache.get(`${process.env.BOT_LOG_CHANNEL}`);
+    let guildBotLogChannel = guildMember.guild.channels.cache.get(botLogChannelId);
+
     if (guildBotLogChannel?.isText()) {
-        (guildBotLogChannel as unknown as TextChannel).send(`Member has left/been kicked from the server!\nMember nickname: **${memberDisplayName}**`);
+        await (guildBotLogChannel as unknown as TextChannel).send(`Member has left/been kicked from the server!\nMember nickname: **${memberDisplayName}**`);
     }
 });
 
 client.on('interactionCreate', async interaction => {
     //check interaction type
     if (!interaction.isCommand()) return;
-    if (interaction.commandName === 'role') await executeManageRole(interaction);
-    if (interaction.commandName === 'telljoke') await executeTellJoke(interaction, pool);
-    if (interaction.commandName === 'rolldice') await executeRollDice(interaction);
+    if (interaction.commandName === 'role') return await executeManageRole(interaction, pool);
+    if (interaction.commandName === 'telljoke') return await executeTellJoke(interaction, pool);
+    if (interaction.commandName === 'rolldice') return await executeRollDice(interaction);
     if (interaction.commandName === 'config') {
         if (interaction.options.getSubcommand() === 'findjoke') {
-            await executeFindJoke(interaction, pool);
+            return await executeFindJoke(interaction, pool);
         } else if (interaction.options.getSubcommand() === 'addjoke') {
-            await executeAddJoke(interaction, pool);
+            return await executeAddJoke(interaction, pool);
         } else if (interaction.options.getSubcommand() === 'deletejoke') {
-            await executeDeleteJoke(interaction, pool);
+            return await executeDeleteJoke(interaction, pool);
         }
     }
+    console.log('command not recognized ', interaction.commandName)
 });
 
 

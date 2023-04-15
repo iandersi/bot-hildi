@@ -1,10 +1,18 @@
 import {CommandInteraction} from "discord.js";
 import * as mariadb from "mariadb";
 import {addJoke, getLatestJoke} from "../jokeDb";
+import {getConfigurationParameter} from "../configDb";
 
 export async function executeAddJoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
 
-    const configRole = process.env.HILDIBOT_CONFIG_ROLE;
+
+
+    if (!interaction.guildId) {
+        console.log('Guild ID error.')
+        return interaction.reply({content: 'Internal error.', ephemeral: true});
+    }
+
+    const configRole = await getConfigurationParameter(pool, interaction.guildId, "hildibot_config_role");
     if (!configRole) return;
 
     if (!interaction.guild) {
@@ -36,6 +44,7 @@ export async function executeAddJoke(interaction: CommandInteraction, pool: mari
         const joke = await addJoke(conn, jokeText);
         console.log(joke);
         const latestJoke = await getLatestJoke(conn);
+        console.log(`${interaction.user.username} Added following joke to the database: ${latestJoke.joke_text}`);
         await interaction.reply(`Following joke was added to the database: ${latestJoke.joke_text}`);
     } catch (err) {
         console.log(err);

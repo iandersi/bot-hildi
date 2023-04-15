@@ -132,3 +132,7 @@ raspiBuild.sh
 raspiRun.sh
 raspiStart.sh
 raspiStop.sh
+
+muistutus.md
+hildibotConfigMuistutus.md
+mariaDb.md

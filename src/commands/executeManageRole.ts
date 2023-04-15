@@ -1,66 +1,91 @@
 import {CommandInteraction, GuildMember} from "discord.js";
+import {getConfigurationParameter} from "../configDb";
+import * as mariadb from "mariadb";
 
-const roleMap = {
-    cactpot: process.env.CACTPOT_ROLE,
-    craftingupdates: process.env.CRAFTINGUPDATES_ROLE,
-    raid:process.env.RAID_ROLE,
-    spoiler: process.env.SPOILER_ROLE
-} as any;
 
-export async function executeManageRole(interaction: CommandInteraction): Promise<void> {
-    if (!process.env.GUEST_ROLE) return;
-    if (!process.env.CACTPOT_ROLE) return;
-    if (!process.env.CRAFTINGUPDATES_ROLE) return;
-    if (!process.env.RAID_ROLE) return;
-    if (!process.env.SPOILER_ROLE) return;
+export async function executeManageRole(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
+
+    if (!interaction.guildId) return;
+    console.log(interaction.user.username, 'used', `Add role: ${interaction.options.getString('addrole')}`, "||", `Remove role: ${interaction.options.getString('removerole')}`);
 
     if (!interaction.guild) {
         console.log('Guild error.')
         return interaction.reply({content: 'Internal error.', ephemeral: true});
     }
 
-    const requestedRoleToAdd = interaction.options.getString('addrole');
-    const requestedRoleToRemove = interaction.options.getString('removerole');
-
     const guildMember = interaction.guild.members.cache.get(interaction.user.id);
 
     if (!guildMember) return interaction.reply('Member not found.');
-    if (guildMember.roles.cache.get(process.env.GUEST_ROLE)) return interaction.reply({
+
+    const guestRole = await getConfigurationParameter(pool, interaction.guildId, "guest_role");
+    if (!guestRole) return interaction.reply({
+        content: 'This command has not been configured for this server.',
+        ephemeral: true
+    });
+
+    if (guildMember.roles.cache.get(guestRole)) return interaction.reply({
         content: 'You do not have permissions to use this command.',
         ephemeral: true
     });
 
+
+    const guestCactpotRole = await getConfigurationParameter(pool, interaction.guildId, "cactpot_role");
+    const craftingUpdatesRole = await getConfigurationParameter(pool, interaction.guildId, "craftingupdates_role");
+    const raidRole = await getConfigurationParameter(pool, interaction.guildId, "raid_role");
+    const spoilerRole = await getConfigurationParameter(pool, interaction.guildId, "spoiler_role");
+
+    const roleMap = {
+        cactpot: guestCactpotRole,
+        craftingupdates: craftingUpdatesRole,
+        raid: raidRole,
+        spoiler: spoilerRole
+    } as any;
+
+
+    const requestedRoleToAdd = interaction.options.getString('addrole');
+    const requestedRoleToRemove = interaction.options.getString('removerole');
+
     if (requestedRoleToAdd) {
-        return addRole(interaction, requestedRoleToAdd, guildMember);
+        if (roleMap[requestedRoleToAdd]) {
+            return addRole(interaction, roleMap[requestedRoleToAdd], guildMember);
+        } else {
+            return interaction.reply({content: 'This command has not been configured for this server.', ephemeral: true});
+        }
     }
 
-    if (requestedRoleToRemove) {
-        return removeRole(interaction, requestedRoleToRemove, guildMember);
+    if(requestedRoleToRemove){
+        if (roleMap[requestedRoleToRemove]) {
+            return removeRole(interaction, roleMap[requestedRoleToRemove], guildMember);
+        } else {
+            return interaction.reply({content: 'This command has not been configured for this server.', ephemeral: true});
+        }
     }
 
+    return interaction.reply({content: 'Please specify role to add or role to remove.', ephemeral: true});
 }
 
-async function addRole(interaction: CommandInteraction, roleMapKey: string, guildMember: GuildMember){
-    const roleToAddId = roleMap[roleMapKey];
-    if (!roleToAddId) return interaction.reply({content: 'Role not found.', ephemeral: true});
-    if (guildMember.roles.cache.get(roleToAddId)) return interaction.reply({content: 'You already have that role.', ephemeral: true});
+async function addRole(interaction: CommandInteraction, roleToAddId: string, guildMember: GuildMember) {
+    if (guildMember.roles.cache.get(roleToAddId)) return interaction.reply({
+        content: 'You already have that role.',
+        ephemeral: true
+    });
 
     const role = guildMember.guild.roles.cache.get(roleToAddId);
     if (role) {
         await guildMember.roles.add(role);
-        return interaction.reply({content: `You now have the ${roleMapKey} role!`, ephemeral: true});
+        return interaction.reply({content: `You now have the role!`, ephemeral: true});
     }
 }
 
-async function removeRole(interaction: CommandInteraction, roleMapKey: string, guildMember: GuildMember){
-    const roleToRemoveId = roleMap[roleMapKey];
-    console.log(roleToRemoveId, roleMapKey, roleMap);
-    if (!roleToRemoveId) return interaction.reply({content: 'Role not found.', ephemeral: true});
-    if (!guildMember.roles.cache.get(roleToRemoveId)) return interaction.reply({content: 'Cannot remove role that you do not have.', ephemeral: true});
+async function removeRole(interaction: CommandInteraction, roleToRemoveId: string, guildMember: GuildMember) {
+    if (!guildMember.roles.cache.get(roleToRemoveId)) return interaction.reply({
+        content: 'Cannot remove role that you do not have.',
+        ephemeral: true
+    });
 
     const role = guildMember.guild.roles.cache.get(roleToRemoveId);
     if (role) {
         await guildMember.roles.remove(role);
-        return interaction.reply({content: `You successfully removed your ${roleMapKey} role!`, ephemeral: true});
+        return interaction.reply({content: `You successfully removed your role!`, ephemeral: true});
     }
 }

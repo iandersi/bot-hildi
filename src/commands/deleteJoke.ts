@@ -1,11 +1,17 @@
 import {CommandInteraction} from "discord.js";
 import * as mariadb from "mariadb";
 import {deleteJokeById, getJokeById} from "../jokeDb";
+import {getConfigurationParameter} from "../configDb";
 
 
 export async function executeDeleteJoke(interaction: CommandInteraction, pool: mariadb.Pool): Promise<void> {
 
-    const configRole = process.env.HILDIBOT_CONFIG_ROLE;
+    if (!interaction.guildId) {
+        console.log('Guild ID error.')
+        return interaction.reply({content: 'Internal error.', ephemeral: true});
+    }
+
+    const configRole = await getConfigurationParameter(pool, interaction.guildId, "hildibot_config_role");
     if (!configRole) return;
 
     if (!interaction.guild) {
@@ -34,6 +40,7 @@ export async function executeDeleteJoke(interaction: CommandInteraction, pool: m
         if (!jokeToBeDeleted) return interaction.reply({content: 'Joke not found.', ephemeral: true});
         const joke = await deleteJokeById(conn, jokeId);
         console.log(joke);
+        console.log(`${interaction.user.username} deleted following joke from the database: ${jokeToBeDeleted.joke_text}`);
         await interaction.reply(`Following joke was deleted from the database: ${jokeToBeDeleted.joke_text}`);
     } catch (err) {
         console.log(err);
