@@ -43,11 +43,6 @@ if (!process.env.CLIENT_ID) {
     process.exit(1);
 }
 
-if (!process.env.GUILD_ID) {
-    console.log("Guild ID missing.");
-    process.exit(1);
-}
-
-rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: commands })
+rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands })
     .then(() => console.log('Successfully registered application commands.'))
     .catch(console.error);
