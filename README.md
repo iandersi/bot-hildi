@@ -1,6 +1,7 @@
 ## About Hildibot
 
 Hildibot is a discord bot that I made for my FFXIV guild to make server and raiding management easier.
+> UPDATE 1.4.2023: Hildibot now has multiserver support.
 
 ### In short
 
@@ -50,19 +51,20 @@ Todo
 
 - Put raidinfo and reminders into MariaDB instead of having separate jsons
 - Requested: Updating raid reminders via dm's
+- Requested: Deathrolling
+- Discord.js upgrade
 
 Done
 - Slash commands and event handling 
-- Requested: roll dice / deathrolling 
+- Requested: roll dice 
 - Requested: Joke command and database for jokes
 - Requested: Add, find and remove jokes from database
 - Role managment commands
+- Multiserver support
 
 ## How to setup Hildibot for development
 
->Note 1: Hildibot does not support multiple servers at the same time!
->
->Note 2: You have to set up your own bot at https://discord.com/developers/applications
+>Note 1: You have to set up your own bot at https://discord.com/developers/applications
 
 After you've cloned this repository you need to configure the following files with your own settings:
 
@@ -74,33 +76,13 @@ After you've cloned this repository you need to configure the following files wi
 ```
 BOT_TOKEN= Your bot token
 CLIENT_ID=Client ID found in devtools portal
-GUILD_ID=Server ID found in Discord
-WELCOME_CHANNEL= Server channel ID for welcome messages
-GUEST_ROLE= Role ID for role that gets kicked
-CRAFTINGUPDATES_ROLE=Role for people who want to get tagged for crafting updates
-RAID_ROLE=Role for people who want to get tagged for raids
-SPOILER_ROLE=Role for people who want access to spoiler channel
-HILDIBOT_CONFIG_ROLE=Role that is allowed to use Hildibots /config command
-BOT_LOG_CHANNEL= Server channel where bot sends notificatons of joined/kicked members
 SCHEDULE_GUEST_KICK_JOB= Cron schedule expression for kicking members 
-STATIC_CHANNEL= Server channel ID for channel with raiding members
-CACTPOT_ROLE=Role to be tagged for the cactpot ticket reminder
-EVENT_CHANNEL=Channel where the cactpot reminder goes (you can change this to anything you like that suits your needs better)
 
 //For MariaDB
 HOST=
 USER=
 PASSWORD=
 DATABASE=
-```
-
-#### MariaDB structure:
-```
-CREATE TABLE `joke` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `joke_text` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4;s
 ```
 
 #### raidInfo.json template:
@@ -131,19 +113,7 @@ CREATE TABLE `joke` (
 ]
 ```
 
-#### Slash commands
-
-> 1. For the slash commands to work you have register the commands.
->
-> 1. You also need to create a reminders.json file for reminders for the specific Cactpot role only.
-
-You can register commands with the following command in the terminal:
-
-```
-> npm run registerCommands
-```
-
-#### raidInfo.json template:
+#### reminders.json template:
 ```
 [
   {
@@ -154,6 +124,50 @@ You can register commands with the following command in the terminal:
   }
 ]
 ```
+
+### MariaDB structure:
+You also need to set up your own database. I used MariaDB and below is the structure you need:
+
+```
+JOKE DB:
+
+CREATE TABLE `joke` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `joke_text` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4;s
+
+SERVER CONFIG DB:
+
+CREATE TABLE `config` (
+  `name` varchar(100) DEFAULT NULL,
+  `guild_id` bigint(20) unsigned NOT NULL,
+  `welcome_channel` bigint(20) unsigned DEFAULT NULL,
+  `guest_role` bigint(20) unsigned DEFAULT NULL,
+  `cactpot_role` bigint(20) unsigned DEFAULT NULL,
+  `craftingupdates_role` bigint(20) unsigned DEFAULT NULL,
+  `raid_role` bigint(20) unsigned DEFAULT NULL,
+  `spoiler_role` bigint(20) unsigned DEFAULT NULL,
+  `bot_log_channel` bigint(20) unsigned DEFAULT NULL,
+  `static_channel` bigint(20) unsigned DEFAULT NULL,
+  `chat_channel` bigint(20) unsigned DEFAULT NULL,
+  `hildibot_config_role` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`guild_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+>Note! You need to add atleast one row to the config table which contains the configuration for your server.
+
+#### Slash commands
+
+For the slash commands to work you have register the commands.
+You can register commands with the following command in the terminal:
+
+```
+> npm run registerCommands
+```
+
+
 
 ## Build
 
@@ -166,4 +180,19 @@ I run mine on a Raspberry Pi with Docker.
 It is upto you in which way you configure the variables for the distributable version, you can create a separate .env file for the dist folder, or you can configure the variables in another way. Anyway you choose, you can then start the bot with the following command:
 ```
 > node main.js
+```
+
+
+## Dockerfile
+
+Below is the dockerfile contents:
+
+```
+FROM node:16.15-alpine
+RUN apk update && apk add tzdata
+COPY ./dist /hildibot
+COPY ./package.json /hildibot
+WORKDIR /hildibot
+RUN npm install --omit=dev
+CMD ["node", "main.js"]
 ```
