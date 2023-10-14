@@ -8,6 +8,7 @@
     "start:test": "ts-node src/main.ts test",
     "registerCommands": "ts-node src/deploy-commands.ts",
     "registerCommands:test": "ts-node src/deploy-commands.ts test",
+    "registerCommands:dnd": "ts-node src/deploy-commands.ts dnd",
     "build": "tsc"
   },
   "author": "",

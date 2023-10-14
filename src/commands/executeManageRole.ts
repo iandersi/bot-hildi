@@ -33,12 +33,14 @@ export async function executeManageRole(interaction: CommandInteraction, pool: m
     const craftingUpdatesRole = await getConfigurationParameter(pool, interaction.guildId, "craftingupdates_role");
     const raidRole = await getConfigurationParameter(pool, interaction.guildId, "raid_role");
     const spoilerRole = await getConfigurationParameter(pool, interaction.guildId, "spoiler_role");
+    const eventRole = await getConfigurationParameter(pool, interaction.guildId, "event_role");
 
     const roleMap = {
         cactpot: guestCactpotRole,
         craftingupdates: craftingUpdatesRole,
         raid: raidRole,
-        spoiler: spoilerRole
+        spoiler: spoilerRole,
+        event: eventRole
     } as any;
 
 
@@ -49,6 +51,7 @@ export async function executeManageRole(interaction: CommandInteraction, pool: m
         if (roleMap[requestedRoleToAdd]) {
             return addRole(interaction, roleMap[requestedRoleToAdd], guildMember);
         } else {
+            console.log(`This role has not been configured for this server: ${requestedRoleToAdd}`);
             return interaction.reply({content: 'This command has not been configured for this server.', ephemeral: true});
         }
     }
@@ -57,6 +60,7 @@ export async function executeManageRole(interaction: CommandInteraction, pool: m
         if (roleMap[requestedRoleToRemove]) {
             return removeRole(interaction, roleMap[requestedRoleToRemove], guildMember);
         } else {
+            console.log(`This role has not been configured for this server: ${requestedRoleToAdd}`);
             return interaction.reply({content: 'This command has not been configured for this server.', ephemeral: true});
         }
     }

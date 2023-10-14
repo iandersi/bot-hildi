@@ -56,7 +56,9 @@ function raidDayReminder(imageToPost: string, messageToPost: string) {
  function fcReminders(messageToPost: string) {
     client.guilds.cache.forEach(async guild => {
         const chatChannelId = await getConfigurationParameter(pool, guild.id, 'chat_channel')
+        const role = await getConfigurationParameter(pool, guild.id, 'cactpot_role');
         if (!chatChannelId) return console.log(`Cannot post reminder for guild ${guild.name} (${guild.id})`);
+        if (!role) return console.log(`Cannot post reminder for guild ${guild.name} (${guild.id})`);
         let generalChatChannel = guild.channels.cache.get(chatChannelId);
         if (generalChatChannel?.isText()) {
             generalChatChannel.send({content: `${messageToPost}`}).then(() => console.log("Reminder done."));

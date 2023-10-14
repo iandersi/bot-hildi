@@ -9,5 +9,6 @@ export type Config = {
     bot_log_channel: bigint,
     static_channel: bigint,
     chat_channel: bigint,
-    hildibot_config_role: bigint
+    hildibot_config_role: bigint,
+    event_role: bigint
 }

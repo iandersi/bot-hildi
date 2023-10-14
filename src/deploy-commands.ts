@@ -13,9 +13,9 @@ dotenv.config({path: envPath});
 const commands = [
     new SlashCommandBuilder().setName('role').setDescription('Manage roles.')
         .addStringOption(option => option.setName('addrole').setDescription('Add role')
-            .setChoices({name: "Cactpot Reminder", value: "cactpot"},{name: "Crafting Updates", value: "craftingupdates"}, {name: "Raid Notifications", value: "raid"}, {name: "Spoiler Channel", value: "spoiler"}))
+            .setChoices({name: "Cactpot Reminder", value: "cactpot"},{name: "Crafting Updates", value: "craftingupdates"}, {name: "Raid Notifications", value: "raid"}, {name: "Spoiler Channel", value: "spoiler"}, {name: "Event Pings", value: "event"}))
         .addStringOption(option => option.setName('removerole').setDescription('Remove role')
-            .setChoices({name: "Cactpot Reminder", value: "cactpot"},{name: "Crafting Updates", value: "craftingupdates"}, {name: "Raid Notifications", value: "raid"}, {name: "Spoiler Channel", value: "spoiler"})),
+            .setChoices({name: "Cactpot Reminder", value: "cactpot"},{name: "Crafting Updates", value: "craftingupdates"}, {name: "Raid Notifications", value: "raid"}, {name: "Spoiler Channel", value: "spoiler"}, {name: "Event Pings", value: "event"})),
     new SlashCommandBuilder().setName('telljoke').setDescription('I\'m fun at parties, I swear!'),
     new SlashCommandBuilder().setName('rolldice').setDescription('Roll a dice and hope for the best.')
         .addIntegerOption(option => option.setName('amount').setDescription('Amount of dice rolled').setRequired(true))
@@ -46,3 +46,4 @@ if (!process.env.CLIENT_ID) {
 rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands })
     .then(() => console.log('Successfully registered application commands.'))
     .catch(console.error);
+

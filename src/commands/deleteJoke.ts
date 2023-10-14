@@ -12,7 +12,10 @@ export async function executeDeleteJoke(interaction: CommandInteraction, pool: m
     }
 
     const configRole = await getConfigurationParameter(pool, interaction.guildId, "hildibot_config_role");
-    if (!configRole) return;
+    if (!configRole) return  interaction.reply({
+        content: 'This command has not been configured for this server.',
+        ephemeral: true
+    });
 
     if (!interaction.guild) {
         console.log('Guild error.')
